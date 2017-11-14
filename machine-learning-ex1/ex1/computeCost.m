@@ -13,10 +13,10 @@ J = 0;
 % Instructions: Compute the cost of a particular choice of theta
 %               You should set J to the cost.
 
+predictions = X * theta;     		% 97x2 x 2x1 = 97x1 mtx
+sqrErrors = (predictions-y).^2; 	% square the difference between predictions and y
 
-
-
-
+J = 1/(2*m)*sum(sqrErrors);			% compute J using minimize J(theta) formula
 % =========================================================================
 
 end
