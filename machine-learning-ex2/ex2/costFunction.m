@@ -20,12 +20,18 @@ grad = zeros(size(theta));
 % Note: grad should have the same dimensions as theta
 %
 
+% define h=g(X*theta) first
+h = sigmoid(X*theta);
 
+% define cost function J in vectorized implementation
+J = 1/m * sum(-y .* log(h) - (1 - y) .* log(1-h));
 
+% define gradient descent in vectorized implmentation
+% must repeat for size(theta,1)
 
-
-
-
+for i = 1:size(theta, 1)
+	grad(i) = 1/m * sum((h-y) .* X(:,i));
+end
 
 % =============================================================
 

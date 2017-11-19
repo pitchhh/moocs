@@ -12,17 +12,16 @@ figure; hold on;
 %               examples and 'ko' for the negative examples.
 %
 
+% assign pos to y positions when y=1, neg to y positions when y=0
+pos = find(y==1);
+neg = find(y==0);
 
-
-
-
-
-
+% plot first exam on x-axis, second exam on y-axis
+plot(X(pos,1), X(pos,2), 'k+', 'LineWidth', 2, 'MarkerSize', 7);
+plot(X(neg,1), X(neg,2), 'ko', 'MarkerFaceColor', 'y', 'MarkerSize', 7);
 
 
 % =========================================================================
-
-
 
 hold off;
 
