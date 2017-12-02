@@ -23,7 +23,7 @@ Theta2 = reshape(nn_params((1 + (hidden_layer_size * (input_layer_size + 1))):en
                  num_labels, (hidden_layer_size + 1));
 
 % Setup some useful variables
-m = size(X, 1);
+m = size(X, 1);  % m is number of training examples
          
 % You need to return the following variables correctly 
 J = 0;
@@ -38,7 +38,35 @@ Theta2_grad = zeros(size(Theta2));
 %         variable J. After implementing Part 1, you can verify that your
 %         cost function computation is correct by verifying the cost
 %         computed in ex4.m
-%
+
+
+% forward propagation
+a1 = [ones(m, 1) X];  % add a column of 1's (bias units) to X input matrix as first column
+z2 = a1 * Theta1';
+a2 = sigmoid(z2);
+
+a2 = [ones(m, 1) a2]; % add a column of 1's (bias units) to a2 as first column
+z3 = a2 * Theta2';
+a3 = sigmoid(z3);
+htheta = a3; % h(x) = a3 = activation of kth output unit 
+
+% compute unregularized cost function 
+for k = 1:num_labels
+	% recode labels as vectors containing only values 0 and 1
+	yk = y == k;
+	htheta_k = htheta(:,k);
+	% cost function formula using J
+	Jk = (1/m)*sum(-yk.*log(htheta_k) - (1-yk).*log(1-htheta_k));
+	J = J + Jk;
+end
+
+% compute regularization terms separately, then add them to the unregularized cost from part 1
+% excluding Theta columns for bias units by doing (:, 2:end)
+regularized_terms = lambda/(2*m) * (sum(sum(Theta1(:, 2:end) .^2)) + sum(sum(Theta2(:, 2:end) .^2)));
+J = J + regularized_terms;
+
+
+
 % Part 2: Implement the backpropagation algorithm to compute the gradients
 %         Theta1_grad and Theta2_grad. You should return the partial derivatives of
 %         the cost function with respect to Theta1 and Theta2 in Theta1_grad and
@@ -53,7 +81,33 @@ Theta2_grad = zeros(size(Theta2));
 %         Hint: We recommend implementing backpropagation using a for-loop
 %               over the training examples if you are implementing it for the 
 %               first time.
-%
+
+% steps 1-4 in a loop according to ex4.pdf
+for t=1:m
+	% set input layer's values (a_1) to the t-th training example x_t
+	% a_1 = [1; a_1];
+	% perform feedforward pass, compute activates for layers 2 and 3
+	for k = 1:num_labels
+		% y(t) extracts only th column in y
+		yk = y(t) == k;
+		% htheta is a3
+		delta_3(k) = htheta(t, k) - yk;
+	end
+
+	% for hidden layer l=2
+	delta_2 = Theta2' * delta_3' .* sigmoidGradient([1, z2(t,:)])';
+	% accumulate gradient, removing delta_2(0)
+	delta_2 = delta_2(2:end);
+	Theta1_grad = Theta1_grad + delta_2*(a1(t,:));
+	Theta2_grad = Theta2_grad + delta_3'*(a2(t,:));
+end
+
+% obtain unregularized gradient for neural network cost function by dividing 
+% accumulated gradients by 1/m
+Theta1_grad = Theta1_grad / m;
+Theta2_grad = Theta2_grad / m;
+
+
 % Part 3: Implement regularization with the cost function and gradients.
 %
 %         Hint: You can implement this around the code for
@@ -62,25 +116,11 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-% -------------------------------------------------------------
+% should not regularize the first column of ThetaX, which is used for bias term
+regularized_term_theta1 = (lambda / m) * (Theta1(:, 2:end));
+regularized_term_theta2 = (lambda / m) * (Theta2(:, 2:end));
+Theta1_grad(:, 2:end) = Theta1_grad(:, 2:end) + regularized_term_theta1;
+Theta2_grad(:, 2:end) = Theta2_grad(:, 2:end) + regularized_term_theta2;
 
 % =========================================================================
 
