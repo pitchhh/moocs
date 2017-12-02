@@ -21,13 +21,17 @@ p = zeros(size(X, 1), 1);
 %       can use max(A, [], 2) to obtain the max for each row.
 %
 
+% need to add column of 1's to the left of matrix
+X = [ones(m,1) X];
+% (5000x401) x (401x25) = (5000x25)
+a2 = sigmoid(X * Theta1');
+% add ones to first col, a2 becomes a 5000x26 matrix
+a2 = [ones(m,1) a2]; 
+% (5000x26) x (26x10) = (5000x10)
+h = sigmoid(a2 * Theta2');
 
-
-
-
-
-
-
+% predict probability by obtaining max index from each row
+[temp, p] = max(h, [], 2);
 
 % =========================================================================
 

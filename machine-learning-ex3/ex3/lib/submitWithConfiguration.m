@@ -159,7 +159,7 @@ function response = validateResponse(resp)
   end
 end
 
-% parse a HTML response and print it's contents
+% parse a HTML response and print it's contsents
 function printHTMLContents(response)
   strippedResponse = regexprep(response, '<[^>]+>', ' ');
   strippedResponse = regexprep(strippedResponse, '[\t ]+', ' ');
@@ -175,5 +175,5 @@ end
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function submissionUrl = submissionUrl()
-  submissionUrl = 'https://www-origin.coursera.org/api/onDemandProgrammingImmediateFormSubmissions.v1';
+  submissionUrl = 'https://www.coursera.org/api/onDemandProgrammingImmediateFormSubmissions.v1';
 end

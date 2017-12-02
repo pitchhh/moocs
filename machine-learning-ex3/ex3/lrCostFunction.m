@@ -36,14 +36,18 @@ grad = zeros(size(theta));
 %           grad = grad + YOUR_CODE_HERE (using the temp variable)
 %
 
+% define h=g(X*theta) first
+h = sigmoid(X*theta);
 
+% define regularized logistic cost function J, this is from ex2's costFunctionReg
+J = (-1/m * sum(y.*log(h) + (1-y).*log(1-h))) + (lambda/(2*m))*sum(theta(2:end).^2);
 
+temp = theta;
 
+% for j=0, or grad(1), there is no theta0
+temp(1) = 0;
 
-
-
-
-
+grad = (1/m)*(X'*(h-y) + lambda*temp);
 
 % =============================================================
 
