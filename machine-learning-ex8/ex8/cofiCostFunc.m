@@ -41,9 +41,11 @@ Theta_grad = zeros(size(Theta));
 %
 
 % compute cost function
-J = 1/2 * sum(sum(R .* (X * Theta' - Y).^2));
+% add regularization term with lambda
+J = 1/2 * sum(sum(R .* (X * Theta' - Y).^2)) + (lambda/2)*(sum(sum(Theta.^2))) + (lambda/2)*(sum(sum(X.^2)));
 
 % compute gradients of the cost function for X and Theta
+% add regularization terms with lambda
 
 % for loop over movies
 for i=1:num_movies
@@ -51,7 +53,7 @@ for i=1:num_movies
     rating_idx = find(R(i,:) == 1);
     Theta_idx = Theta(rating_idx, :);
     Y_idx = Y(i, rating_idx);
-    X_grad(i,:) = (X(i,:)*Theta_idx' - Y_idx) * Theta_idx;
+    X_grad(i,:) = (X(i,:)*Theta_idx' - Y_idx) * Theta_idx + (lambda * X(i,:));
 end
 
 % for loop over users
@@ -60,9 +62,8 @@ for j=1:num_users
     rating_idx = find(R(:,j) == 1);
     X_idx = X(rating_idx, :);
     Y_idx = Y(rating_idx, j);
-    Theta_grad(j,:) = (X_idx*Theta(j,:)' - Y_idx)' * X_idx;
+    Theta_grad(j,:) = (X_idx*Theta(j,:)' - Y_idx)' * X_idx + (lambda * Theta(j,:));
 end
-
 
 % =============================================================
 
